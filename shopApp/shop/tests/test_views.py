@@ -1,17 +1,16 @@
 from django.test import TestCase
 
-from shop.models import Category
+from shop.models import Category, Product
 from django.urls import reverse
+import shop.tests.test_objects as t
 
 
 class ProductListByCategoryVewTest(TestCase):
-    category = {'Книги': 'Knigi', 'Техника': 'Technika', 'Посуда': 'Posuda'}
 
     @classmethod
     def setUpTestData(cls):
         # init random category
-        for key, value in cls.category.items():
-            Category.objects.create(name=key, slug=value)
+        t.init_category()
 
     def test_view_url_exists_at_desired_location(self):
         resp = self.client.get('/')
@@ -19,7 +18,8 @@ class ProductListByCategoryVewTest(TestCase):
 
     def category_count_in_view_equals_category_count_in_model(self):
         resp = self.client.get('/')
-        self.assertTrue(resp.context['categories'].__len__() == self.category.__len__())
+        categories = Category.objects.all()
+        self.assertTrue(resp.context['categories'].__len__() == categories.__len__())
 
     def test_view_url_exists_at_desired_location_category(self):
         categories = Category.objects.all()
@@ -37,8 +37,9 @@ class ProductListByCategoryVewTest(TestCase):
         self.assertTemplateUsed(resp, 'shop/product/list.html')
 
     def test_view_url_accessible_by_name_product_list_by_category(self):
-        for key, value in self.category.items():
-            resp = self.client.get(reverse('shop:ProductListByCategory', args=[value]))
+        categories = Category.objects.all()
+        for category in categories:
+            resp = self.client.get(reverse('shop:ProductListByCategory', args=[category.slug]))
             self.assertEqual(resp.status_code, 200)
             self.assertTemplateUsed(resp, 'shop/product/list.html')
 
@@ -47,6 +48,11 @@ class ProductDetailVewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        # init category
-        # init product
-        pass
+        t.init_category()
+        t.init_products()
+
+    def test_view_url_exists_at_desired_location_category(self):
+        for product in Product.objects.all():
+            resp = self.client.get(reverse('shop:ProductDetail', kwargs={'id':product.id, 'product_slug' : product.slug}))
+            self.assertEqual(resp.status_code, 200)
+            self.assertTemplateUsed(resp, 'shop/product/detail.html')

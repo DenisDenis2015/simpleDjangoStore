@@ -18,8 +18,8 @@ def ProductList(request, category_slug=None):
 
 
 # Страница с описанием товара
-def ProductDetail(request, id, slug):
-    product = get_object_or_404(Product, id=id, slug=slug, available=True)
+def ProductDetail(request, id, product_slug):
+    product = get_object_or_404(Product, id=id, slug=product_slug, available=True)
     product_comments = ProductComment.objects.filter(product_id=id).order_by('-created')
     categories = Category.objects.all()
     category = get_object_or_404(Category, id=product.category_id)
