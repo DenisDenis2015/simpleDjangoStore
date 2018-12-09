@@ -53,3 +53,7 @@ class ProductComment(models.Model):
 
     def __str__(self):
         return self.comment
+
+# Класс рейтинг товара TODO
+class Rating(models.Model):
+    product = models.ForeignKey(Product, related_name='rating', verbose_name="Рейтинг", on_delete=models.CASCADE)
