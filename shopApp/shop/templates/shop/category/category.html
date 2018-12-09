@@ -6,7 +6,10 @@
             Все
         </a>
         {% for cat in categories %}
-        <a {% if category.slug == cat.slug %} class="list-group-item list-group-item-action active" {% endif %} class="list-group-item list-group-item-action"
+        <a {% if cat.name == category.name %}
+                class="list-group-item list-group-item-action active"
+           {% endif %}
+             class="list-group-item list-group-item-action"
              href="{{ cat.get_absolute_url }}">{{ cat.name }}
         </a>
         {% endfor %}

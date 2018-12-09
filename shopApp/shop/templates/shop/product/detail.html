@@ -4,14 +4,14 @@
 {{ product.name }}
 {% endblock %}
 {% block content %}
-<div class="product-detail">
+<div>
     <div class="col-sm-4">
-        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-image.jpg"%}{% endif %}"
-        class="img-responsive">
+        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no-image.jpg'%}{% endif %}"
+             class="img-responsive">
     </div>
     <div class="col-sm-4">
-        <h1>{{ product.name }}</h1>
-        <h2><a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a></h2>
+        <h2>{{ product.name }}</h2>
+        <!--<h2><a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a></h2>-->
         <div>
             <p class="price">
                 {{ product.price }} руб.
@@ -23,16 +23,20 @@
              </span>
             </div>
         </div>
-        <div class="container">
-            <h4>Отзывы</h4>
+        {% if product_comments %}
+        <div>
+            <h4>Отзывы:</h4>
             {% for comment in product_comments %}
-            <p>Пользователь:</p>
-            <p>{{comment.created}}</p>
-            <span>
-                {{ comment.comment }}
-            </span>
-            {% endfor %}
+            <div class="card">
+                <h5 class="card-title">Пользователь:</h5>
+                <p>{{comment.created}}</p>
+                <span>
+                    {{ comment.comment }}
+                </span>
+                {% endfor %}
+            </div>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

@@ -4,17 +4,20 @@
   {% if category %} {{ category.name }} {% else %} Страница товаров {% endif %}
 {% endblock %}
 {% block content %}
-  <div id="main" class="product_list text-center">
+  <div id="main" class="text-center">
     <h1>{% if category %}{{ category.name }}{% else %}Товары{% endif %}</h1>
-    <div class="items row">
+    <div class="row">
       {% for product in products %}
-        <div class="item col-sm-4">
-          <a href="{{ product.get_absolute_url }}">
-            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-image.jpg"%}{% endif %}" class="img-responsive">
-          </a>
-          <div>
-            <a href="{{ product.get_absolute_url }}">{{ product.name }}</a><br>
-            {{ product.price }} руб.
+        <div class="col-sm-4">
+          <div class="col-sm-11 card">
+            <a href="{{ product.get_absolute_url }}">
+              <img class="card-img-top" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-image.jpg"%}{% endif %}">
+            </a>
+            <div class="card-body">
+              <h5 class="card-title">{{ product.name }}</h5>
+              <p class="card-text">Цена : {{ product.price }} руб.</p>
+              <a href="{{ product.get_absolute_url }}" class="btn btn-primary">Подробнее</a>
+            </div>
           </div>
         </div>
       {% endfor %}

@@ -17,12 +17,12 @@
 <body>
     <div class="container-fluid">
         <section id="header" class="text-center">
-            <div class="top container">
+            <div>
                 Мой Онлайн-Магазин
             </div>
-            <div class="top-bl">
-                <div class="container">
-                    <div class="cart">Ваша корзина пуста</div>
+            <div>
+                <div>
+                    <div>Ваша корзина пуста</div>
                 </div>
             </div>
         </section>
@@ -30,7 +30,7 @@
             <section id="category" class="col-md-2 text-center">
                 {% include "shop/category/category.html" %}
             </section>
-            <section id="content row" class="col-md-8">
+            <section id="content" class="col-md-8">
                 {% block content %}{% endblock %}
             </section>
         </div>

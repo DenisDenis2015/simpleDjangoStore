@@ -21,7 +21,11 @@ def ProductList(request, category_slug=None):
 def ProductDetail(request, id, slug):
     product = get_object_or_404(Product, id=id, slug=slug, available=True)
     product_comments = ProductComment.objects.filter(product_id=id).order_by('-created')
+    categories = Category.objects.all()
+    category = get_object_or_404(Category, id=product.category_id)
     return render(request, 'shop/product/detail.html', {
         'product': product,
-        'product_comments' : product_comments
+        'product_comments' : product_comments,
+        'categories': categories,
+        'category': category,
     })
