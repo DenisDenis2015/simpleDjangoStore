@@ -1,0 +1,37 @@
+{% extends "shop/index.html" %}
+{% load static %}
+{% block title %}
+{{ product.name }}
+{% endblock %}
+{% block content %}
+<div class="product-detail">
+    <div class="col-sm-4">
+        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-image.jpg"%}{% endif %}"
+        class="img-responsive">
+    </div>
+    <div class="col-sm-4">
+        <h1>{{ product.name }}</h1>
+        <h2><a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a></h2>
+        <div>
+        <p class="price">
+            {{ product.price }} руб.
+        </p>
+        <div>
+            <h4>Описание</h4>
+            <span>
+                {{ product.description | linebreaks}}
+             </span>
+        </div>
+    </div>
+    <div class = "container">
+        <h4>Отзывы</h4>
+        {% for comment in product_comments %}
+            <p>Пользователь:</p>
+            <p>{{comment.created}}</p>
+            <span>
+                {{ comment.comment }}
+            </span>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
