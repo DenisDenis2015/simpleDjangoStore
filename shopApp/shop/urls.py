@@ -4,7 +4,7 @@ from django.urls import path
 
 app_name = 'shop'
 urlpatterns = [
-    path('<str:category_slug>', views.ProductList, name='ProductListByCategory'),
-    path('<int:id>/<str:product_slug>', views.ProductDetail, name='ProductDetail'),
+    path('category/<str:category_slug>', views.ProductList, name='ProductListByCategory'),
+    path('product/<str:product_slug>/<int:id>', views.ProductDetail, name='ProductDetail'),
     path('', views.ProductList, name='ProductList'),
 ]

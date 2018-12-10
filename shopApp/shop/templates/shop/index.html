@@ -16,16 +16,29 @@
 </head>
 <body>
     <div class="container-fluid">
-        <section id="header" class="text-center">
-            <div>
-                Мой Онлайн-Магазин
-            </div>
-            <div>
+        <div class = "row">
+            <div class="col-md-2"></div>
+            <section id="header" class="text-center col-md-8" >
                 <div>
-                    <div>Ваша корзина пуста</div>
+                    Мой Онлайн-Магазин
                 </div>
-            </div>
-        </section>
+                <div>
+                    <div>
+                        <div>Ваша корзина пуста</div>
+                    </div>
+                </div>
+            </section>
+            <section class="col-md-2">
+                <div>
+                    {% if user.is_authenticated %}
+                    <p>User: {{ user.get_username }}</p>
+                        <p><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></p>
+                    {% else %}
+                        <p><a href="{% url 'login'%}?next={{request.path}}">Login</a></p>
+                    {% endif %}
+                </div>
+            </section>
+        </div>
         <div class="row">
             <section id="category" class="col-md-2 text-center">
                 {% include "shop/category/category.html" %}

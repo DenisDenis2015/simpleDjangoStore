@@ -42,17 +42,19 @@ class Product(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('shop:ProductDetail', args=[self.id, self.slug])
+        return reverse('shop:ProductDetail', args=[self.slug, self.id])
 
 
 # Коментарий к продукту
 class ProductComment(models.Model):
-    product = models.ForeignKey(Product, related_name='product_comment', verbose_name="Продукт", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name='product_comment', verbose_name="Продукт",
+                                on_delete=models.CASCADE)
     comment = models.TextField(blank=False, verbose_name="Коментарий")
     created = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления коментария")
 
     def __str__(self):
         return self.comment
+
 
 # Класс рейтинг товара TODO
 class Rating(models.Model):
