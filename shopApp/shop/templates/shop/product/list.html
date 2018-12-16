@@ -8,7 +8,7 @@
     <h1>{% if category %}{{ category.name }}{% else %}Товары{% endif %}</h1>
     <div class="row">
       {% for product in products %}
-        <div class="col-sm-4">
+        <div class="col-sm-3">
           <div class="col-sm-11 card">
             <a href="{{ product.get_absolute_url }}">
               <img class="card-img-top" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-image.jpg"%}{% endif %}">
