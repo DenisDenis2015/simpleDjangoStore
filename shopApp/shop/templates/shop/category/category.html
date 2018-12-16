@@ -1,3 +1,5 @@
+{% load cache %}
+{% cache 500 category %}
 <div id="sidebar">
     <h3>Категории</h3>
     <div class = "list-group">
@@ -15,3 +17,4 @@
         {% endfor %}
     </div>
 </div>
+{% endcache %}
