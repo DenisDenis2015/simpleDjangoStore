@@ -1,4 +1,4 @@
-from shop.models import Category, Product
+from shop.models import Category, Product, Cart
 import uuid
 
 
@@ -19,6 +19,28 @@ def init_products():
             item.price = 1
             item.stock = 2
             item.save()
+
+
+def add_random_product():
+    category = Category.objects.first()
+    item = Product()
+    item.category = category
+    item.name = my_random_string(category.slug)
+    item.slug = item.name + '_slug'
+    item.price = 1
+    item.stock = 2
+    item.save()
+    return item
+
+def add_product_to_cart(user, product=None, count = 1):
+    for item in range(0, count):
+        cart = Cart()
+        if product is not None:
+            cart.product = product
+        else:
+            cart.product = add_random_product()
+        cart.created_by = user
+        cart.save()
 
 
 def my_random_string(string_start, string_length=6):
