@@ -24,7 +24,11 @@
                 </div>
                 <div>
                     <div>
-                        <div>Ваша корзина пуста</div>
+                        {% if user.is_authenticated %}
+                            <a href = "{% url "shop:ShowCartProduct" %}">В вашей корзине {{cartCount}} товаров</a>
+                        {% else %}
+                            <p>Ваша необходимо авторизироваться</p>
+                        {% endif %}
                     </div>
                 </div>
             </section>

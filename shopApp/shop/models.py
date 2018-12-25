@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 
@@ -44,11 +45,20 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse('shop:ProductDetail', args=[self.slug, self.id])
 
+    def add_product_to_cart(self):
+        return reverse('shop:AddProductToCart', args=[self.slug, self.id])
 
-# Коментарий к продукту
+
+# Модель корзина пользователя
+class Cart(models.Model):
+    product = models.ForeignKey(Product, related_name='cart', verbose_name="Корзина", on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, blank=False, related_name='created_by', editable=False, on_delete=models.CASCADE)
+    date_from = models.DateTimeField(auto_now=True)
+
+
+# Модель коментарий к продукту
 class ProductComment(models.Model):
-    product = models.ForeignKey(Product, related_name='product_comment', verbose_name="Продукт",
-                                on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name='product_comment', verbose_name="Продукт", on_delete=models.CASCADE)
     comment = models.TextField(blank=False, verbose_name="Коментарий")
     created = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления коментария")
 
@@ -56,6 +66,6 @@ class ProductComment(models.Model):
         return self.comment
 
 
-# Класс рейтинг товара TODO
+# Модель рейтинг товара TODO
 class Rating(models.Model):
     product = models.ForeignKey(Product, related_name='rating', verbose_name="Рейтинг", on_delete=models.CASCADE)

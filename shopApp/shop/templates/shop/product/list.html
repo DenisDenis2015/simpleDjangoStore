@@ -8,7 +8,7 @@
     <h1>{% if category %}{{ category.name }}{% else %}Товары{% endif %}</h1>
     <div class="row">
       {% for product in products %}
-        <div class="col-sm-3">
+        <div class="col-sm-4">
           <div class="col-sm-11 card">
             <a href="{{ product.get_absolute_url }}">
               <img class="card-img-top" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-image.jpg"%}{% endif %}">
@@ -16,7 +16,13 @@
             <div class="card-body">
               <h5 class="card-title">{{ product.name }}</h5>
               <p class="card-text">Цена : {{ product.price }} руб.</p>
-              <a href="{{ product.get_absolute_url }}" class="btn btn-primary">Подробнее</a>
+              <p class="card-text">Остаток : {{ product.stock }}</p>
+              <div class="btn-group btn-group-toggle">
+                <a href="{{ product.get_absolute_url }}" role="button" class="btn btn-outline-primary btn-sm">Подробнее</a>
+                {% if user.is_authenticated %}
+                    <a href="{{ product.add_product_to_cart }}" role="button" class="btn btn-outline-success btn-sm">Добавить в корзину</a>
+                {% endif %}
+              </div>
             </div>
           </div>
         </div>
