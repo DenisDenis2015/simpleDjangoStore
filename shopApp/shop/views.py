@@ -4,7 +4,7 @@ from .models import Category, Product, ProductComment, Cart
 
 
 # Страница с товарами
-def ProductList(request, category_slug=None, products=None):
+def ProductList(request, category_slug=None, products=None, is_cart = False):
     category = None
     categories = Category.objects.all()
     if products is None :
@@ -17,13 +17,14 @@ def ProductList(request, category_slug=None, products=None):
         'category': category,
         'categories': categories,
         'products': products,
-        'cartCount': cart_count
+        'cartCount': cart_count,
+        'is_cart' : is_cart
     })
 
 
 def get_cart_count(request):
     if request.user.is_authenticated:
-        return Cart.objects.filter(created_by=request.user).count()
+        return Cart.objects.filter(created_by=request.user).distinct('product_id').count()
 
 
 # Страница с описанием товара
@@ -51,11 +52,19 @@ def AddProductToCart(request, id, product_slug):
     cart.save()
     return ProductList(request)
 
+# Удалить продукт из корзины
+def RemoveProductFromCart(request, id, product_slug):
+    # добавить удаление не всего товара а уменьшение на 1 + добавить отображение количество товаров в корзине
+    product = get_object_or_404(Product, id=id, slug=product_slug, available=True)
+    product.stock += 1
+    product.save()
+    Cart.objects.filter(product_id = id, created_by = request.user).delete()
+    return ShowCartProduct(request)
+
 
 # Посмотреть корзину с товарами
 @login_required(login_url='/accounts/login/')
 def ShowCartProduct(request):
-    # TODO пределать на join
     cart = Cart.objects.filter(created_by=request.user)
     products = Product.objects.filter(id__in = [item.product_id for item in cart])
-    return ProductList(request, products = products)
+    return ProductList(request, products = products, is_cart = True)

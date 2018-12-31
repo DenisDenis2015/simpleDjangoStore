@@ -20,7 +20,11 @@
               <div class="btn-group btn-group-toggle">
                 <a href="{{ product.get_absolute_url }}" role="button" class="btn btn-outline-primary btn-sm">Подробнее</a>
                 {% if user.is_authenticated %}
+                  {% if is_cart %}
+                    <a href="{{ product.remove_product_from_cart }}" role="button" class="btn btn-outline-danger btn-sm">Удалить из корзины</a>
+                  {% else %}
                     <a href="{{ product.add_product_to_cart }}" role="button" class="btn btn-outline-success btn-sm">Добавить в корзину</a>
+                  {% endif %}
                 {% endif %}
               </div>
             </div>

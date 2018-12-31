@@ -49,6 +49,9 @@ class Product(models.Model):
         return reverse('shop:AddProductToCart', args=[self.slug, self.id])
 
 
+    def remove_product_from_cart(self):
+        return reverse('shop:RemoveProductFromCart', args=[self.slug, self.id])
+
 # Модель корзина пользователя
 class Cart(models.Model):
     product = models.ForeignKey(Product, related_name='cart', verbose_name="Корзина", on_delete=models.CASCADE)
