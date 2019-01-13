@@ -32,6 +32,7 @@ class Product(models.Model):
     available = models.BooleanField(default=True, verbose_name="Доступен")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    count_in_cart = 0
 
     class Meta:
         ordering = ['name']

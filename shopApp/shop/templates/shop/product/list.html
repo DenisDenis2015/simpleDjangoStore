@@ -16,12 +16,16 @@
             <div class="card-body">
               <h5 class="card-title">{{ product.name }}</h5>
               <p class="card-text">Цена : {{ product.price }} руб.</p>
-              <p class="card-text">Остаток : {{ product.stock }}</p>
+              {% if is_cart %}
+                <p class="card-text">Колличество : {{product.count_in_cart}} </p>
+              {% else %}
+                <p class="card-text">Остаток : {{ product.stock }}</p>
+              {% endif %}
               <div class="btn-group btn-group-toggle">
                 <a href="{{ product.get_absolute_url }}" role="button" class="btn btn-outline-primary btn-sm">Подробнее</a>
                 {% if user.is_authenticated %}
                   {% if is_cart %}
-                    <a href="{{ product.remove_product_from_cart }}" role="button" class="btn btn-outline-danger btn-sm">Удалить из корзины</a>
+                    <a href="#" role="button" class="btn btn-outline-danger btn-sm" onclick="getHello({{ product.id }});return false;">Удалить из корзины</a>
                   {% else %}
                     <a href="{{ product.add_product_to_cart }}" role="button" class="btn btn-outline-success btn-sm">Добавить в корзину</a>
                   {% endif %}

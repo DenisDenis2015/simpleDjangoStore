@@ -1,10 +1,10 @@
-from django.test import TestCase, TransactionTestCase
-
-from shop.models import Category, Product, Cart
-from django.urls import reverse
-import shop.tests.helper.test_objects as t
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
+from django.test import TestCase
+from django.urls import reverse
+
+import shop.tests.helper.test_objects as t
+from shop.models import Category, Product, Cart
 
 
 class ProductListByCategoryVewTest(TestCase):
@@ -111,3 +111,34 @@ class ShowCartProductViewTest(TestCase):
         self.assertTrue(cart.__len__() == 5)
         resp = self.client.get(reverse('shop:ShowCartProduct'))
         self.assertTrue(resp.context['products'].__len__() == 5)
+
+
+class RemoveProductFromCartView(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        t.init_category()
+        t.init_products()
+
+    @classmethod
+    def setUp(self):
+        user = get_user_model()
+        user.objects.create_user('temporary', 'temporary@gmail.com', 'temporary')
+
+
+    def test_remove_product_from_cart_delete_all_product_and_increase_product_count_in_stock(self):
+
+        # берем продукт и увеличиваем его количество на складе
+        product = Product.objects.first()
+        product.stock = 20
+        product.save()
+
+        user = User.objects.get(username="temporary")
+        # добавляем товар в корзину пользователя
+        t.add_product_to_cart(user, product = product, count = 5)
+        self.client.login(username='temporary', password='temporary')
+        response = self.client.post('/ajax/cart/remove/product', {'id' : product.id})
+        self.assertTrue(response.status_code == 200, "response status code 200")
+        product_in_cart_count = Cart.objects.filter(created_by=user, product_id=product.id).count()
+        self.assertTrue(product_in_cart_count == 0, "cart is empty")
+

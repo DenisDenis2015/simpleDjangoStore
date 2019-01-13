@@ -32,7 +32,8 @@ def add_random_product():
     item.save()
     return item
 
-def add_product_to_cart(user, product=None, count = 1):
+
+def add_product_to_cart(user, product=None, count=1):
     for item in range(0, count):
         cart = Cart()
         if product is not None:
