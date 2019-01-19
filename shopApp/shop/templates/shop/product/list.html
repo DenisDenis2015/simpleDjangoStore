@@ -8,7 +8,7 @@
     <h1>{% if category %}{{ category.name }}{% else %}Товары{% endif %}</h1>
     <div class="row">
       {% for product in products %}
-        <div class="col-sm-4">
+        <div class="col-sm-4" id = "product">
           <div class="col-sm-11 card">
             <a href="{{ product.get_absolute_url }}">
               <img class="card-img-top" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-image.jpg"%}{% endif %}">
@@ -17,7 +17,15 @@
               <h5 class="card-title">{{ product.name }}</h5>
               <p class="card-text">Цена : {{ product.price }} руб.</p>
               {% if is_cart %}
-                <p class="card-text">Колличество : {{product.count_in_cart}} </p>
+              <div class = "justify-content-center">
+                <div class = "row">
+                  <p class="card-text">Колличество : <span id = "productCount">{{product.count_in_cart}}</span> </p>
+                  <a href="#" role="button" class="" 
+                          onclick="CartModule.changeProductCountInCart({{ product.id }}, 'add') ;return false;"><span style="font-size : 20px">+</span></a>
+                  <a href="#" role="button" class="" 
+                          onclick="CartModule.changeProductCountInCart({{ product.id }}, 'remove');return false;"><span style="font-size : 20px">-</span></a>
+                </div>
+              </div>
               {% else %}
                 <p class="card-text">Остаток : {{ product.stock }}</p>
               {% endif %}
@@ -25,9 +33,11 @@
                 <a href="{{ product.get_absolute_url }}" role="button" class="btn btn-outline-primary btn-sm">Подробнее</a>
                 {% if user.is_authenticated %}
                   {% if is_cart %}
-                    <a href="#" role="button" class="btn btn-outline-danger btn-sm" onclick="getHello({{ product.id }});return false;">Удалить из корзины</a>
+                    <a href="#" role="button" class="btn btn-outline-danger btn-sm" 
+                          onclick="CartModule.removeProductFromCart({{ product.id }}, this);return false;">Удалить из корзины</a>
                   {% else %}
-                    <a href="{{ product.add_product_to_cart }}" role="button" class="btn btn-outline-success btn-sm">Добавить в корзину</a>
+                    <a href="#" role="button" class="btn btn-outline-success btn-sm"
+                          onclick="CartModule.changeProductCountInCart({{ product.id }}, 'add'); return false" >Добавить в корзину</a>
                   {% endif %}
                 {% endif %}
               </div>

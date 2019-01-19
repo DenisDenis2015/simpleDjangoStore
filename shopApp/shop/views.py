@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Category, Product, ProductComment, Cart
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.http import JsonResponse
 
 
 def ProductList(request, category_slug=None, products=None, is_cart=False):
@@ -58,14 +59,24 @@ def AddProductToCart(request, id, product_slug):
     """
      Добавить продукт в корзину
     """
-    product = get_object_or_404(Product, id=id, slug=product_slug, available=True)
+    add_product_to_cart(id, request)
+    return ProductList(request)
+
+
+def add_product_to_cart(id, request):
+    """
+    Увеличивает колличество определенного продукта
+    :param id: идентификатор продукта
+    :param request:  запрос
+    :return:
+    """
+    product = get_object_or_404(Product, id=id, available=True)
     product.stock -= 1
     product.save()
     cart = Cart()
     cart.product = product
     cart.created_by = request.user
     cart.save()
-    return ProductList(request)
 
 
 def remove_product_from_cart(request, product_id):
@@ -92,7 +103,7 @@ def ShowCartProduct(request):
     product_ids_in_cart = [item.product_id for item in cart]
     products = Product.objects.filter(id__in=set(product_ids_in_cart))
 
-    # для каждого продукта получапем его колличество в корзине
+    # для каждого продукта получаем его колличество в корзине
     for product in products:
         product.count_in_cart = product_ids_in_cart.count(product.id)
 
@@ -106,5 +117,41 @@ def RemoveProductFromCart(request):
     Удалить товар из корзины
     """
     remove_product_from_cart(request, request.POST['id'])
-    # добавить ответ с количеством продуктов в корзине
-    return HttpResponse('Hello World!')
+
+    return JsonResponse({"cartCount": get_cart_count(request)})
+
+
+def dicreaseProductCountInCartByOne(request, product_id):
+    """
+    Уменьшить колличество товара в корзине на 1
+    :param request: запрос
+    :param product_id: идентификатор товара который надо уменьшить
+    :return:
+    """
+    cart = Cart.objects.filter(created_by=request.user, product_id=product_id).earliest('date_from')
+    cart.delete()
+
+
+@csrf_exempt
+@login_required(login_url='/accounts/login/')
+def ChangeProductCountInCart(request):
+    """
+    Данный метод изменяет колличество конкретного товара в корзине,
+    уменьшает на один или увеличивает, возвращает новое колличество измененого товара в
+    корзине и общее колличество товара в корзине как результат
+    :param request: запрос
+    :return: product_count оставшиеся колличество товара
+    """
+
+    product_id = request.POST['id']
+    operation = request.POST['operation']
+
+    if operation == "add":
+        add_product_to_cart(product_id, request)
+    elif operation == "remove":
+        dicreaseProductCountInCartByOne(request, product_id)
+    else:
+        raise AttributeError('undefined operation' + operation)
+
+    product_count = Cart.objects.filter(created_by=request.user, product_id=product_id).count()
+    return JsonResponse({"productCount": product_count, "cartCount": get_cart_count(request)})
