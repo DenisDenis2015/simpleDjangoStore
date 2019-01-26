@@ -1,17 +1,16 @@
--- function
 DROP FUNCTION IF EXISTS test(int);
 CREATE OR REPLACE FUNCTION test(int)
-RETURNS int AS $$
+RETURNS TABLE (result bigint) AS $$
 DECLARE
     count ALIAS FOR $1;
 BEGIN
     RAISE NOTICE 'Hello from void function';
-    SELECT count(*) as result FROM shop_cart WHERE date_from < statement_timestamp() + (count * interval '1 minute');
-    RETURN result;
+    RETURN QUERY SELECT count(*) as result FROM shop_cart WHERE date_from < statement_timestamp() + (count * interval '1 minute');
 END;
 $$ LANGUAGE plpgsql;
 
-select test(1);
+
+select result from test(1)
 
 
 DO $$

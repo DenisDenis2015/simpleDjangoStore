@@ -27,11 +27,18 @@ var CartModule = (function(){
     /**
      * Update product count
      * @param {Number} productCount new product count
+     * @param {Number} productId id of product
      */
-    function updateProductCount(data){
-        var element = $("#productCount")[0]
+    function updateProductCount(data, productId){
+        var element = $("#productCount_" + productId)[0]
         if (element) {
-            element.innerHTML = data['productCount']
+            var newProductCount = data['productCount']
+            if (newProductCount == 0){
+                removeProductFromHtmlCart(element, data['cartCount'])
+                return
+            } else {
+                element.innerHTML = newProductCount
+            }
         }
         changeCartCount(data['cartCount'])     
     }
@@ -67,7 +74,8 @@ var CartModule = (function(){
     return {
         /**
          * Remove product from cart
-         * @param {number} productId id of product
+         * @param {Number} productId id of product
+         * @param {Object} element 
          */
         removeProductFromCart : function(productId, element) {          
             ajax({
@@ -96,7 +104,7 @@ var CartModule = (function(){
                 async : true,
                 data : {'id' : productId, 'operation' : operation, csrfmiddlewaretoken : getCookie('csrftoken')},
             }).then(function (data){
-                updateProductCount(JSON.parse(data))
+                updateProductCount(JSON.parse(data), productId)
             }).catch(function(error){
                 console.log(error)
             })

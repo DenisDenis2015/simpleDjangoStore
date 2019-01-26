@@ -92,7 +92,7 @@ class ShowCartProductViewTest(TestCase):
         self.assertEqual(resp.status_code, 302)
         self.assertTrue('/accounts/login/' in resp.url)
 
-    # тест на отображение одного рподукта в корзтине
+    # тест на отображение одного продукта в корзине
     def test_product_in_cart_avaliable(self):
         self.client.login(username='temporary', password='temporary')
         user = User.objects.get(username="temporary")

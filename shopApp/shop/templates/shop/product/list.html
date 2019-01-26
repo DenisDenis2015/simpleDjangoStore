@@ -18,12 +18,14 @@
               <p class="card-text">Цена : {{ product.price }} руб.</p>
               {% if is_cart %}
               <div class = "justify-content-center">
-                <div class = "row">
-                  <p class="card-text">Колличество : <span id = "productCount">{{product.count_in_cart}}</span> </p>
+                <div class = "row">                    
+                  <p class="card-text">Колличество : <span id = "productCount_{{ product.id }}">{{product.count_in_cart}}</span> </p>
                   <a href="#" role="button" class="" 
-                          onclick="CartModule.changeProductCountInCart({{ product.id }}, 'add') ;return false;"><span style="font-size : 20px">+</span></a>
+                          onclick="CartModule.changeProductCountInCart({{ product.id }}, 'add') ;return false;">
+                          <img style="margin : 5px; width: 12px" src="{% static '/icon/plus.svg' %}" alt="plus"></a>
                   <a href="#" role="button" class="" 
-                          onclick="CartModule.changeProductCountInCart({{ product.id }}, 'remove');return false;"><span style="font-size : 20px">-</span></a>
+                          onclick="CartModule.changeProductCountInCart({{ product.id }}, 'remove');return false;">
+                          <img style="margin : 5px; width: 12px" src="{% static '/icon/minus.svg' %}" alt="minus"></a>
                 </div>
               </div>
               {% else %}
